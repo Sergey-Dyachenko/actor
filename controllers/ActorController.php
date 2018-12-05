@@ -1,17 +1,15 @@
 <?php
 
-namespace app\Controllers;
+namespace app\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
+use yii\web\Controller;
+use yii\web\Response;
+use yii\filters\VerbFilter;
 use app\models\Actor;
 use app\models\ActorSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
-/**
- * ActorController implements the CRUD actions for Actor model.
- */
 class ActorController extends Controller
 {
     /**
@@ -30,6 +28,22 @@ class ActorController extends Controller
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+        ];
+    }
+
+     /**
      * Lists all Actor models.
      * @return mixed
      */
@@ -37,12 +51,23 @@ class ActorController extends Controller
     {
         $searchModel = new ActorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+       // $films = Actor::findOne(1)->getFilms()->all();
+        // $model = Actor::findOne(1);
+        // $result = $model->getFilms()->all();
+            // foreach ($films as $film) {
+            //     var_dump($film->film_name);
+            //     die();
+            // }
+            // echo '<pre>';
+            // var_dump($films);
+            // echo '</pre>';
+            // die();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
+
 
     /**
      * Displays a single Actor model.
@@ -56,6 +81,7 @@ class ActorController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
+
 
     /**
      * Creates a new Actor model.
@@ -94,7 +120,7 @@ class ActorController extends Controller
             'model' => $model,
         ]);
     }
-
+    
     /**
      * Deletes an existing Actor model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -124,4 +150,5 @@ class ActorController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Actor;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ActorSearch */
@@ -26,13 +27,28 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
+            'photo',
             'first_name',
             'last_name',
-            'gender',
-            'phone',
+            // 'gender',
+           // 'phone',
+            [
+                'attribute'=>'films',
+                'format' => 'raw',
+                'value'=>function($data){
+                    $films = Actor::findOne($data->id)->getFilms()->all();
+                    $films_list = '';
+                    $i = 1;
+                    foreach ($films as $film){
+                        $films_list =  $films_list . $i . ' '. $film->film_name . '</br> ';
+                        $i++;        
+                    }
+                    return $films_list;
+                }
+            ],
             //'age',
             //'genre',
-            //'photo',
+          
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
