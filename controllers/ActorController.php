@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\Actor;
 use app\models\ActorSearch;
+use app\models\UploadFile;
+use yii\web\UploadedFile;
 
 class ActorController extends Controller
 {
@@ -22,6 +24,16 @@ class ActorController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['crete', 'update', 'view', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -51,17 +63,6 @@ class ActorController extends Controller
     {
         $searchModel = new ActorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-       // $films = Actor::findOne(1)->getFilms()->all();
-        // $model = Actor::findOne(1);
-        // $result = $model->getFilms()->all();
-            // foreach ($films as $film) {
-            //     var_dump($film->film_name);
-            //     die();
-            // }
-            // echo '<pre>';
-            // var_dump($films);
-            // echo '</pre>';
-            // die();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -91,9 +92,17 @@ class ActorController extends Controller
     public function actionCreate()
     {
         $model = new Actor();
+        
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $image_model = new UploadFile();
+            $image_model->imageFile = UploadedFile::getInstance($model, 'photo');
+            if ($image_model->uploadFile()){
+                $model->photo = $image_model->imageFile->name;
+            }
+            if ($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -113,7 +122,14 @@ class ActorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $image_model = new UploadFile();
+            $image_model->imageFile = UploadedFile::getInstance($model, 'photo');
+            if ($image_model->uploadFile()){
+                $model->photo = $image_model->imageFile->name;
+            }
+            if ($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -129,7 +145,13 @@ class ActorController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
-    {
+    {   
+        $model = $this->findModel($id);
+
+        if ($model->photo){
+            unlink(Yii::$app->basePath.'\\web\\img\\' . $model->photo);
+        }
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

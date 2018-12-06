@@ -27,11 +27,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'photo',
+            [
+                'attribute' => 'photo',
+                'format' => 'html',    
+                'value' => function ($data) {
+                    return Html::img(Yii::getAlias('@web').'/img/'. $data['photo'],
+                        ['width' => '40px']);
+                },
+            ],
             'first_name',
             'last_name',
-            // 'gender',
-           // 'phone',
+            'gender',
+           'phone',
             [
                 'attribute'=>'films',
                 'format' => 'raw',
