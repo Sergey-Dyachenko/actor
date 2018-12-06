@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\models\Actor;
+use yii\grid\ActionColumn;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ActorSearch */
@@ -25,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             [
                 'attribute' => 'photo',
@@ -58,6 +58,8 @@ $this->params['breadcrumbs'][] = $this->title;
           
 
             ['class' => 'yii\grid\ActionColumn'],
+            
         ],
+        
     ]); ?>
 </div>

@@ -49,10 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>function($model){
      
                     $films = Actor::findOne($model->id)->getFilms()->all();
-                    echo '<pre>';
-                    var_dump($films);
-                    echo '</pre>';
-                    die();
                     $films_list = '';
                     $i = 1;
                     foreach ($films as $film){

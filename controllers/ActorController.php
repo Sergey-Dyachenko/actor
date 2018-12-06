@@ -28,7 +28,7 @@ class ActorController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['crete', 'update', 'view', 'delete'],
+                'only' => ['create', 'update', 'view', 'delete'],
                 'rules' => [
                     [
                         'allow' => true,
