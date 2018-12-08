@@ -3,7 +3,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\models\Actor;
+use app\models\Film;
 use yii\grid\ActionColumn;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ActorSearch */
@@ -24,8 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+   
         'columns' => [
+
             ['class' => 'yii\grid\SerialColumn'],
+            
+            
             'id',
             [
                 'attribute' => 'photo',
@@ -38,10 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name',
             'last_name',
             'gender',
+             'age',
+            'genre',
            'phone',
             [
-                'attribute'=>'films',
+                'attribute'=>'film_name',
                 'format' => 'raw',
+                'filter'=>ArrayHelper::map(Film::find()->asArray()->all(), 'film_name', 'film_name'),
                 'value'=>function($data){
                     $films = Actor::findOne($data->id)->getFilms()->all();
                     $films_list = '';
@@ -53,11 +62,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $films_list;
                 }
             ],
-            //'age',
-            //'genre',
+           
           
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                // 'visibleButtons' => [
+                //     'update' => Yii::$app->user->identity->username == 'admin', // or whatever condition
+                //     'delete' => Yii::$app->user->can('update')
+                // ],
+            ],
+
+            
             
         ],
         

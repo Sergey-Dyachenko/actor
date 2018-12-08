@@ -12,6 +12,8 @@ use app\models\Actor;
  */
 class ActorSearch extends Actor
 {
+    public $film_name;
+
     /**
      * {@inheritdoc}
      */
@@ -19,7 +21,7 @@ class ActorSearch extends Actor
     {
         return [
             [['id', 'age'], 'integer'],
-            [['first_name', 'last_name', 'gender', 'phone', 'genre', 'photo'], 'safe'],
+            [['first_name', 'last_name', 'gender', 'phone', 'genre', 'photo', 'film_name'], 'safe'],
         ];
     }
 
@@ -41,19 +43,20 @@ class ActorSearch extends Actor
      */
     public function search($params)
     {
-        $query = Actor::find();
+        $query = Actor::find()->innerJoinWith('films', true);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+           // 'sort' => ['first_name', 'last_name', 'age', 'gender']
         ]);
 
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            //uncomment the following line if you do not want to return any records when validation fails
+            $query->where('0=1');
             return $dataProvider;
         }
 
@@ -61,6 +64,7 @@ class ActorSearch extends Actor
         $query->andFilterWhere([
             'id' => $this->id,
             'age' => $this->age,
+        //    'film_name' => $this->film_name,
         ]);
 
         $query->andFilterWhere(['like', 'first_name', $this->first_name])
@@ -68,7 +72,8 @@ class ActorSearch extends Actor
             ->andFilterWhere(['like', 'gender', $this->gender])
             ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'genre', $this->genre])
-            ->andFilterWhere(['like', 'photo', $this->photo]);
+            ->andFilterWhere(['like', 'photo', $this->photo])
+            ->andFilterWhere(['like', 'film_name', $this->film_name]);
 
         return $dataProvider;
     }
