@@ -49,19 +49,10 @@ class m181208_214921_fill_data_table_actors extends Migration
             'gender'    => 'male',
             'phone'     => '+4567897898',
             'age'       => '41',
-            'genre'     => 'action',
+            'genre'     => 'comics',
             'photo'     => 'boseman.jpg'
         ) );
 
-        $this->insert(self::ACTORTABLE, array(
-            'first_name' => 'Chadwick',
-            'last_name' => 'Boseman',
-            'gender'    => 'male',
-            'phone'     => '+4567897898',
-            'age'       => '41',
-            'genre'     => 'action',
-            'photo'     => 'boseman.jpg'
-        ) );
 
         $this->insert(self::ACTORTABLE, array(
             'first_name' => 'Gal',
